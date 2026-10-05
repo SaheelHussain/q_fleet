@@ -3,20 +3,16 @@
  * Interacts with FastAPI backend endpoints
  */
 
-// In production, require an explicit backend URL instead of accidentally
-// requesting API paths from the static frontend host.
+// Vercel serves both the FastAPI backend and frontend from the same origin.
+// Keep localhost's backend URL for local development.
 const API_URL = (
   import.meta.env.VITE_API_BASE_URL ||
   (typeof window !== 'undefined' && window.location.hostname === 'localhost'
     ? 'http://localhost:8000/api'
-    : '')
+    : `${window.location.origin}/api`)
 ).replace(/\/$/, '');
 
 async function request(path, options) {
-  if (!API_URL) {
-    throw new Error('Backend URL is not configured. Set VITE_API_BASE_URL in the deployment environment.');
-  }
-
   const res = await fetch(`${API_URL}${path}`, options);
   if (!res.ok) {
     throw new Error(`Backend request failed (${res.status} ${res.statusText}).`);

@@ -85,21 +85,12 @@ npm run dev
 ```
 - Interactive Dashboard: [http://localhost:5173](http://localhost:5173)
 
-### 3. Deploy to Vercel
-The frontend is configured for Vercel deployment from the repository root using [vercel.json](vercel.json). Import this GitHub repository into Vercel and keep the Vercel project root set to the repository root.
+### 3. Deploy the Full App to Vercel
+The root [vercel.json](vercel.json) builds the Vite frontend, while [index.py](index.py) serves it from the same FastAPI deployment as the API. The frontend calls `/api` on the same Vercel origin by default.
 
-#### Deploy the FastAPI backend to Render
-The root [render.yaml](render.yaml) defines the FastAPI web service. In Render, create a new Blueprint and select this GitHub repository. Render will build the backend from `backend/`, start Uvicorn on Render's assigned port, and use `/api/health` for its health check. The blueprint also allows the current Vercel deployment origin through CORS.
+Import this GitHub repository into Vercel and keep the project root set to the repository root. Vercel detects the root `requirements.txt` and deploys the FastAPI application as a Python Function; the build command in `vercel.json` builds the frontend assets. No separate backend host or `VITE_API_BASE_URL` setting is required.
 
-After Render finishes deploying, copy the service's public URL (for example, `https://q-fleet-api.onrender.com`) and set this Vercel environment variable:
-
-```text
-VITE_API_BASE_URL=https://your-render-service.onrender.com/api
-```
-
-Redeploy the Vercel project after adding the variable. If you use another Vercel domain, update `FRONTEND_ORIGINS` in Render to that exact site origin. For multiple frontend domains, separate origins with commas. The local backend defaults to `http://localhost:5173`.
-
-The Render free service may take a short time to wake after inactivity; retry the connection from the dashboard if it reports the backend as unavailable.
+After pushing changes, wait for Vercel's Git integration to finish deploying, then verify `/api/health` on the deployed domain returns JSON with `"status": "online"`.
 
 ### 4. Run Backend Validation Test Suite
 ```bash

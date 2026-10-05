@@ -62,8 +62,9 @@ function App() {
           >
             <h1 className="text-xl font-semibold text-amber-300">Backend unavailable</h1>
             <p className="mt-3 text-sm leading-6 text-slate-300">
-              The dashboard needs its FastAPI backend to load vessel, route, and fuel data.
-              Configure <code className="text-cyan-300">VITE_API_BASE_URL</code> to your deployed backend URL ending in <code className="text-cyan-300">/api</code>, then redeploy this site.
+              The dashboard could not load vessel, route, and fuel data from its API.
+              Check the connection and retry. If you configured a separate API host,
+              verify the <code className="text-cyan-300">VITE_API_BASE_URL</code> setting.
             </p>
             <p className="mt-3 break-words font-mono text-xs text-slate-400">{connectionError}</p>
             <button

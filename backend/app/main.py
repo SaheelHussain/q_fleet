@@ -35,14 +35,15 @@ app.add_middleware(
 # Register API routes
 app.include_router(api_router, prefix="/api")
 
-@app.get("/")
-def root():
-    return {
-        "system": "Q-Fleet (AuraQuanta)",
-        "description": "Quantum-Inspired Fuel Consumption Prediction & Green Fleet Optimization",
-        "docs_url": "/docs",
-        "health_check": "/api/health"
-    }
+if not os.getenv("VERCEL"):
+    @app.get("/")
+    def root():
+        return {
+            "system": "Q-Fleet (AuraQuanta)",
+            "description": "Quantum-Inspired Fuel Consumption Prediction & Green Fleet Optimization",
+            "docs_url": "/docs",
+            "health_check": "/api/health"
+        }
 
 if __name__ == "__main__":
     import uvicorn
