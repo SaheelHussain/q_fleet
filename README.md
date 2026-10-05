@@ -88,13 +88,18 @@ npm run dev
 ### 3. Deploy to Vercel
 The frontend is configured for Vercel deployment from the repository root using [vercel.json](vercel.json). Import this GitHub repository into Vercel and keep the Vercel project root set to the repository root.
 
-Set this Vercel environment variable to the public URL of your separately hosted FastAPI backend:
+#### Deploy the FastAPI backend to Render
+The root [render.yaml](render.yaml) defines the FastAPI web service. In Render, create a new Blueprint and select this GitHub repository. Render will build the backend from `backend/`, start Uvicorn on Render's assigned port, and use `/api/health` for its health check. The blueprint also allows the current Vercel deployment origin through CORS.
+
+After Render finishes deploying, copy the service's public URL (for example, `https://q-fleet-api.onrender.com`) and set this Vercel environment variable:
 
 ```text
-VITE_API_BASE_URL=https://your-backend.example.com/api
+VITE_API_BASE_URL=https://your-render-service.onrender.com/api
 ```
 
-Set `FRONTEND_ORIGINS` on the backend to the exact Vercel site origin, such as `https://your-project.vercel.app`. For multiple frontend domains, separate origins with commas. The local backend defaults to `http://localhost:5173`.
+Redeploy the Vercel project after adding the variable. If you use another Vercel domain, update `FRONTEND_ORIGINS` in Render to that exact site origin. For multiple frontend domains, separate origins with commas. The local backend defaults to `http://localhost:5173`.
+
+The Render free service may take a short time to wake after inactivity; retry the connection from the dashboard if it reports the backend as unavailable.
 
 ### 4. Run Backend Validation Test Suite
 ```bash

@@ -13,14 +13,14 @@ npm run dev
 
 1. Import the repository into Vercel from GitHub.
 2. Set the Vercel project root to the repository root. The root [vercel.json](../vercel.json) builds `frontend` and serves the SPA.
-3. Set the `VITE_API_BASE_URL` environment variable to the public FastAPI backend URL, including `/api`, for example:
+3. Deploy the FastAPI backend to Render by creating a Blueprint from this repository; [render.yaml](../render.yaml) defines its setup. Once it is deployed, set the `VITE_API_BASE_URL` environment variable to its public URL including `/api`, for example:
 
 ```text
-VITE_API_BASE_URL=https://your-backend.example.com/api
+VITE_API_BASE_URL=https://your-render-service.onrender.com/api
 ```
 
 4. Deploy or redeploy after setting the environment variable.
 
-The FastAPI backend must be hosted separately from this static Vercel deployment. Set its `FRONTEND_ORIGINS` environment variable to the exact Vercel site origin, such as `https://your-project.vercel.app`. For local development, copy `.env.example` to `.env.local` and use `http://localhost:8000/api`.
+The Render Blueprint sets `FRONTEND_ORIGINS` to the current Vercel site origin. If your Vercel domain changes, update that value in Render. For local development, copy `.env.example` to `.env.local` and use `http://localhost:8000/api`.
 
 If the backend URL is missing or invalid, the dashboard displays a backend-unavailable message instead of remaining on its loading screen.
