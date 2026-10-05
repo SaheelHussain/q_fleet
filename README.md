@@ -85,7 +85,18 @@ npm run dev
 ```
 - Interactive Dashboard: [http://localhost:5173](http://localhost:5173)
 
-### 3. Run Backend Validation Test Suite
+### 3. Deploy to Vercel
+The frontend is configured for Vercel deployment from the repository root using [vercel.json](vercel.json). Import this GitHub repository into Vercel and keep the Vercel project root set to the repository root.
+
+Set this Vercel environment variable to the public URL of your separately hosted FastAPI backend:
+
+```text
+VITE_API_BASE_URL=https://your-backend.example.com/api
+```
+
+Set `FRONTEND_ORIGINS` on the backend to the exact Vercel site origin, such as `https://your-project.vercel.app`. For multiple frontend domains, separate origins with commas. The local backend defaults to `http://localhost:5173`.
+
+### 4. Run Backend Validation Test Suite
 ```bash
 cd backend
 python test_suite.py

@@ -3,38 +3,46 @@
  * Interacts with FastAPI backend endpoints
  */
 
-const BASE_URL = 'http://localhost:8000/api';
+// Prefer a deployment-specific backend URL. In Vercel, set VITE_API_BASE_URL
+// to your production FastAPI URL; for local dev, this falls back to the Docker
+// or local backend running on port 8000.
+const API_URL = (
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? `${window.location.origin}/api`
+    : 'http://localhost:8000/api')
+).replace(/\/$/, '');
 
 export const api = {
   // Health & Catalog
   async getHealth() {
-    const res = await fetch(`${BASE_URL}/health`);
+    const res = await fetch(`${API_URL}/health`);
     return res.json();
   },
 
   async getVessels() {
-    const res = await fetch(`${BASE_URL}/fleet/vessels`);
+    const res = await fetch(`${API_URL}/fleet/vessels`);
     return res.json();
   },
 
   async getRoutes() {
-    const res = await fetch(`${BASE_URL}/fleet/routes`);
+    const res = await fetch(`${API_URL}/fleet/routes`);
     return res.json();
   },
 
   async getPorts() {
-    const res = await fetch(`${BASE_URL}/fleet/ports`);
+    const res = await fetch(`${API_URL}/fleet/ports`);
     return res.json();
   },
 
   async getFuelProfiles() {
-    const res = await fetch(`${BASE_URL}/fuels/profiles`);
+    const res = await fetch(`${API_URL}/fuels/profiles`);
     return res.json();
   },
 
   // Predictive & Optimization Endpoints
   async predictFuel(payload) {
-    const res = await fetch(`${BASE_URL}/predict/fuel`, {
+    const res = await fetch(`${API_URL}/predict/fuel`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -43,7 +51,7 @@ export const api = {
   },
 
   async optimizeRoute(payload) {
-    const res = await fetch(`${BASE_URL}/optimize/route`, {
+    const res = await fetch(`${API_URL}/optimize/route`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -52,7 +60,7 @@ export const api = {
   },
 
   async optimizeFleet(payload) {
-    const res = await fetch(`${BASE_URL}/optimize/fleet`, {
+    const res = await fetch(`${API_URL}/optimize/fleet`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -61,7 +69,7 @@ export const api = {
   },
 
   async runBenchmark(payload) {
-    const res = await fetch(`${BASE_URL}/benchmark/run`, {
+    const res = await fetch(`${API_URL}/benchmark/run`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -70,7 +78,7 @@ export const api = {
   },
 
   async runMLBenchmark() {
-    const res = await fetch(`${BASE_URL}/benchmark/ml`, {
+    const res = await fetch(`${API_URL}/benchmark/ml`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -78,7 +86,7 @@ export const api = {
   },
 
   async auditCII(payload) {
-    const res = await fetch(`${BASE_URL}/cii/audit`, {
+    const res = await fetch(`${API_URL}/cii/audit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -87,7 +95,7 @@ export const api = {
   },
 
   async auditColdIroning(payload) {
-    const res = await fetch(`${BASE_URL}/cold-ironing/benefit`, {
+    const res = await fetch(`${API_URL}/cold-ironing/benefit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -96,7 +104,7 @@ export const api = {
   },
 
   async simulateScenario(payload) {
-    const res = await fetch(`${BASE_URL}/simulate/scenario`, {
+    const res = await fetch(`${API_URL}/simulate/scenario`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
