@@ -69,7 +69,11 @@ export default function Navbar({ activeTab, setActiveTab, systemStatus }) {
             <div className="flex items-center space-x-2 bg-slate-950/60 border border-slate-800 px-3 py-1.5 rounded-full text-xs">
               <span className={`w-2 h-2 rounded-full ${systemStatus === 'online' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
               <span className="text-slate-300 font-mono text-[11px]">
-                {systemStatus === 'online' ? 'Quantum Engine Active' : 'Connecting...'}
+                {systemStatus === 'online'
+                  ? 'Quantum Engine Active'
+                  : systemStatus === 'connecting'
+                    ? 'Connecting...'
+                    : 'Backend Offline'}
               </span>
             </div>
           </div>

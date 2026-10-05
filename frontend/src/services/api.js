@@ -3,112 +3,115 @@
  * Interacts with FastAPI backend endpoints
  */
 
-// Prefer a deployment-specific backend URL. In Vercel, set VITE_API_BASE_URL
-// to your production FastAPI URL; for local dev, this falls back to the Docker
-// or local backend running on port 8000.
+// In production, require an explicit backend URL instead of accidentally
+// requesting API paths from the static frontend host.
 const API_URL = (
   import.meta.env.VITE_API_BASE_URL ||
-  (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? `${window.location.origin}/api`
-    : 'http://localhost:8000/api')
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:8000/api'
+    : '')
 ).replace(/\/$/, '');
+
+async function request(path, options) {
+  if (!API_URL) {
+    throw new Error('Backend URL is not configured. Set VITE_API_BASE_URL in the deployment environment.');
+  }
+
+  const res = await fetch(`${API_URL}${path}`, options);
+  if (!res.ok) {
+    throw new Error(`Backend request failed (${res.status} ${res.statusText}).`);
+  }
+
+  if (!res.headers.get('content-type')?.includes('application/json')) {
+    throw new Error('Backend returned a non-JSON response. Check that VITE_API_BASE_URL points to the FastAPI /api URL.');
+  }
+
+  return res.json();
+}
 
 export const api = {
   // Health & Catalog
   async getHealth() {
-    const res = await fetch(`${API_URL}/health`);
-    return res.json();
+    return request('/health');
   },
 
   async getVessels() {
-    const res = await fetch(`${API_URL}/fleet/vessels`);
-    return res.json();
+    return request('/fleet/vessels');
   },
 
   async getRoutes() {
-    const res = await fetch(`${API_URL}/fleet/routes`);
-    return res.json();
+    return request('/fleet/routes');
   },
 
   async getPorts() {
-    const res = await fetch(`${API_URL}/fleet/ports`);
-    return res.json();
+    return request('/fleet/ports');
   },
 
   async getFuelProfiles() {
-    const res = await fetch(`${API_URL}/fuels/profiles`);
-    return res.json();
+    return request('/fuels/profiles');
   },
 
   // Predictive & Optimization Endpoints
   async predictFuel(payload) {
-    const res = await fetch(`${API_URL}/predict/fuel`, {
+    return request('/predict/fuel', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 
   async optimizeRoute(payload) {
-    const res = await fetch(`${API_URL}/optimize/route`, {
+    return request('/optimize/route', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 
   async optimizeFleet(payload) {
-    const res = await fetch(`${API_URL}/optimize/fleet`, {
+    return request('/optimize/fleet', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 
   async runBenchmark(payload) {
-    const res = await fetch(`${API_URL}/benchmark/run`, {
+    return request('/benchmark/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 
   async runMLBenchmark() {
-    const res = await fetch(`${API_URL}/benchmark/ml`, {
+    return request('/benchmark/ml', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     });
-    return res.json();
   },
 
   async auditCII(payload) {
-    const res = await fetch(`${API_URL}/cii/audit`, {
+    return request('/cii/audit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 
   async auditColdIroning(payload) {
-    const res = await fetch(`${API_URL}/cold-ironing/benefit`, {
+    return request('/cold-ironing/benefit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 
   async simulateScenario(payload) {
-    const res = await fetch(`${API_URL}/simulate/scenario`, {
+    return request('/simulate/scenario', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    return res.json();
   },
 };

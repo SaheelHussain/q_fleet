@@ -22,3 +22,5 @@ VITE_API_BASE_URL=https://your-backend.example.com/api
 4. Deploy or redeploy after setting the environment variable.
 
 The FastAPI backend must be hosted separately from this static Vercel deployment. Set its `FRONTEND_ORIGINS` environment variable to the exact Vercel site origin, such as `https://your-project.vercel.app`. For local development, copy `.env.example` to `.env.local` and use `http://localhost:8000/api`.
+
+If the backend URL is missing or invalid, the dashboard displays a backend-unavailable message instead of remaining on its loading screen.
